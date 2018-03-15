@@ -68,8 +68,7 @@ class EventEndingRow extends React.Component {
         lastEnd = current = current + 1
       }
     }
-
-    return <div className="rbc-row">{row}</div>
+    return <div className="show-more-box rbc-row">{row}</div>
   }
 
   canRenderSlotEvent(slot, span) {

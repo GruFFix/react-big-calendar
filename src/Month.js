@@ -32,6 +32,7 @@ let propTypes = {
   max: PropTypes.instanceOf(Date),
 
   step: PropTypes.number,
+  maxEventCount: PropTypes.number,
   getNow: PropTypes.func.isRequired,
 
   scrollToTime: PropTypes.instanceOf(Date),
@@ -88,7 +89,7 @@ class MonthView extends React.Component {
     this._bgRows = []
     this._pendingSelection = []
     this.state = {
-      rowLimit: 5,
+      rowLimit: 4,
       needLimitMeasure: true,
     }
   }
@@ -165,6 +166,7 @@ class MonthView extends React.Component {
       selected,
       date,
       longPressThreshold,
+      maxEventCount,
     } = this.props
 
     const { needLimitMeasure, rowLimit } = this.state
@@ -181,6 +183,7 @@ class MonthView extends React.Component {
         getNow={getNow}
         date={date}
         range={week}
+        maxEventCount={maxEventCount}
         events={events}
         maxRows={rowLimit}
         selected={selected}
