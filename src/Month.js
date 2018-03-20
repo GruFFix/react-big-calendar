@@ -267,26 +267,31 @@ class MonthView extends React.Component {
     let { components } = this.props
 
     return (
-      <Overlay
-        rootClose
-        placement="bottom"
-        container={this}
-        show={!!overlay.position}
-        onHide={() => this.setState({ overlay: null })}
-      >
-        <Popup
-          {...this.props}
-          eventComponent={components.event}
-          eventWrapperComponent={components.eventWrapper}
-          position={overlay.position}
-          events={overlay.events}
-          slotStart={overlay.date}
-          slotEnd={overlay.end}
-          onSelect={this.handleSelectEvent}
-          onDoubleClick={this.handleDoubleClickEvent}
-          PopupContainer={components.popup}
-        />
-      </Overlay>
+      <div>
+        {!!overlay.position &&
+          components.popup && <div className="rbc-overlay-bg" />}
+
+        <Overlay
+          rootClose
+          placement="bottom"
+          container={this}
+          show={!!overlay.position}
+          onHide={() => this.setState({ overlay: null })}
+        >
+          <Popup
+            {...this.props}
+            eventComponent={components.event}
+            eventWrapperComponent={components.eventWrapper}
+            position={overlay.position}
+            events={overlay.events}
+            slotStart={overlay.date}
+            slotEnd={overlay.end}
+            onSelect={this.handleSelectEvent}
+            onDoubleClick={this.handleDoubleClickEvent}
+            PopupContainer={components.popup}
+          />
+        </Overlay>
+      </div>
     )
   }
 
