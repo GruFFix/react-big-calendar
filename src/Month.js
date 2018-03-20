@@ -284,6 +284,7 @@ class MonthView extends React.Component {
           slotEnd={overlay.end}
           onSelect={this.handleSelectEvent}
           onDoubleClick={this.handleDoubleClickEvent}
+          PopupContainer={components.popup}
         />
       </Overlay>
     )
