@@ -235,7 +235,7 @@ class DayColumn extends React.Component {
           <div
             style={{
               ...xStyle,
-              top: `${top.toFixed(1)}%`,
+              top: `${top.toFixed(2)}%`,
               height: `${height}%`,
               [isRtl ? 'right' : 'left']: `${Math.max(0, xOffset)}%`,
               width: `${width}%`,

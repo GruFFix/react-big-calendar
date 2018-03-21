@@ -35,6 +35,7 @@ export default class TimeSlotGroup extends Component {
       resource,
       slotPropGetter,
     } = this.props
+
     return (
       <TimeSlot
         key={slotNumber}
