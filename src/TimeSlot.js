@@ -38,6 +38,8 @@ export default class TimeSlot extends Component {
           )}
         >
           {this.props.showLabel && <span>{this.props.content}</span>}
+
+          <div className="add-event-btn">+</div>
         </div>
       </Wrapper>
     )

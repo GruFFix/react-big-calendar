@@ -17,6 +17,7 @@ export default class TimeSlotGroup extends Component {
     timeGutterFormat: dateFormat,
     culture: PropTypes.string,
     resource: PropTypes.string,
+    events: PropTypes.array,
   }
   static defaultProps = {
     timeslots: 2,

@@ -24,6 +24,8 @@ export default class TimeColumn extends Component {
     slotPropGetter: PropTypes.func,
     dayPropGetter: PropTypes.func,
     dayWrapperComponent: elementType,
+
+    events: PropTypes.array,
   }
   static defaultProps = {
     step: 30,
@@ -44,6 +46,7 @@ export default class TimeColumn extends Component {
       dayPropGetter,
       timeGutterFormat,
       culture,
+      events,
     } = this.props
 
     return (
@@ -60,6 +63,7 @@ export default class TimeColumn extends Component {
         showLabels={showLabels}
         timeGutterFormat={timeGutterFormat}
         dayWrapperComponent={dayWrapperComponent}
+        events={events}
       />
     )
   }
