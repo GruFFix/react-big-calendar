@@ -403,6 +403,13 @@ export default class TimeGrid extends Component {
           ) : (
             <span>{header}</span>
           )}
+
+          {dates.eq(date, today, 'day') && (
+            <div className="today-border-box">
+              <div className="today-border left header" />
+              <div className="today-border right header" />
+            </div>
+          )}
         </div>
       )
     })
