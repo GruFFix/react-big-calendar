@@ -64,13 +64,41 @@ const events = [
 ]
 
 const DragAndDropCalendar = withDragAndDrop(Calendar)
+const DATA_COUNT = 150
+const events2 = generateCalendarEvent(DATA_COUNT)
+
+function generateCalendarEvent(count) {
+  const calendarEvent = []
+
+  for (let i = 1; i <= count; i++) {
+    const randomDay = Math.floor(Math.random() * (30 - 1) + 1)
+    const randomType = Math.floor(Math.random() * (4 - 1) + 1)
+    const randomHour = Math.floor(Math.random() * (1 - 24) + 1)
+    const day = new Date(2018, 2, randomDay, 20, 30, 35)
+
+    if (moment(day).format('ddd') === 'Sun') {
+      continue
+    }
+
+    calendarEvent.push({
+      id: i,
+      title: `Event - ${i}`,
+      start: new Date(2018, 2, randomDay, randomHour, 0, 0),
+      end: new Date(2018, 2, randomDay, randomHour + 2, 0, 0),
+      type: ['new', 'actual', 'close', 'old'][randomType],
+      description: `Description - ${i}`,
+    })
+  }
+
+  return calendarEvent
+}
 
 const DragCalendar = () => {
   return (
     <DragAndDropCalendar
       popup
       selectable
-      events={resources.events}
+      events={events2}
       resources={resources.list}
       onEventDrop={event => {
         action(event)
@@ -104,7 +132,7 @@ storiesOf('module.Calendar.week', module)
           defaultView="week"
           min={moment('12:00am', 'h:mma').toDate()}
           max={moment('11:59pm', 'h:mma').toDate()}
-          events={events}
+          events={events2}
           onSelectEvent={action('event selected')}
           defaultDate={new Date()}
         />

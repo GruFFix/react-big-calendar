@@ -103,6 +103,7 @@ class DayColumn extends React.Component {
       selectRangeFormat,
       culture,
       dayPropGetter,
+      events,
       ...props
     } = this.props
 
@@ -127,10 +128,12 @@ class DayColumn extends React.Component {
           dates.eq(max, current, 'day') && 'rbc-today'
         )}
         style={style}
+        isToday={dates.eq(max, current, 'day')}
         getNow={getNow}
         min={min}
         max={max}
         step={step}
+        columnEvents={events}
       >
         <div className={cn('rbc-events-container', { rtl: this.props.rtl })}>
           {this.renderEvents()}
@@ -235,7 +238,7 @@ class DayColumn extends React.Component {
           <div
             style={{
               ...xStyle,
-              top: `${top.toFixed(2)}%`,
+              top: `${top}%`,
               height: `${height}%`,
               [isRtl ? 'right' : 'left']: `${Math.max(0, xOffset)}%`,
               width: `${width}%`,
@@ -255,13 +258,16 @@ class DayColumn extends React.Component {
               'rbc-event-continues-day-after': _continuesAfter,
             })}
           >
-            <div className="rbc-event-content">
-              {EventComponent ? (
-                <EventComponent event={event} title={title} label={label} />
-              ) : (
-                title
-              )}
-            </div>
+            {EventComponent ? (
+              <EventComponent
+                event={event}
+                isSelected={_isSelected}
+                title={title}
+                label={label}
+              />
+            ) : (
+              title
+            )}
           </div>
         </EventWrapper>
       )

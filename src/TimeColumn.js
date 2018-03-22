@@ -20,10 +20,12 @@ export default class TimeColumn extends Component {
     type: PropTypes.string.isRequired,
     className: PropTypes.string,
     resource: PropTypes.string,
+    isToday: PropTypes.bool,
 
     slotPropGetter: PropTypes.func,
     dayPropGetter: PropTypes.func,
     dayWrapperComponent: elementType,
+    columnEvents: PropTypes.array,
 
     events: PropTypes.array,
   }
@@ -47,6 +49,7 @@ export default class TimeColumn extends Component {
       timeGutterFormat,
       culture,
       events,
+      columnEvents,
     } = this.props
 
     return (
@@ -64,6 +67,7 @@ export default class TimeColumn extends Component {
         timeGutterFormat={timeGutterFormat}
         dayWrapperComponent={dayWrapperComponent}
         events={events}
+        columnEvents={columnEvents}
       />
     )
   }
@@ -79,6 +83,7 @@ export default class TimeColumn extends Component {
       step,
       timeslots,
       resource,
+      isToday,
     } = this.props
     const totalMin = dates.diff(min, max, 'minutes')
     const numGroups = Math.ceil(totalMin / (step * timeslots))
@@ -106,6 +111,13 @@ export default class TimeColumn extends Component {
 
     return (
       <div className={cn(className, 'rbc-time-column')} style={style}>
+        {isToday && (
+          <div className="today-border-box">
+            <div className="today-border left" />
+            <div className="today-border right" />
+          </div>
+        )}
+
         {renderedSlots}
         {children}
       </div>

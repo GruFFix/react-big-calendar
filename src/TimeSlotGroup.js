@@ -18,12 +18,13 @@ export default class TimeSlotGroup extends Component {
     culture: PropTypes.string,
     resource: PropTypes.string,
     events: PropTypes.array,
+    columnEvents: PropTypes.array,
   }
   static defaultProps = {
     timeslots: 2,
     step: 30,
     isNow: false,
-    showLabels: false,
+    showLabels: true,
   }
 
   renderSlice(slotNumber, content, value) {
@@ -34,6 +35,7 @@ export default class TimeSlotGroup extends Component {
       culture,
       resource,
       slotPropGetter,
+      events,
     } = this.props
 
     return (
@@ -47,6 +49,7 @@ export default class TimeSlotGroup extends Component {
         isNow={isNow}
         resource={resource}
         value={value}
+        events={events}
       />
     )
   }
@@ -66,7 +69,43 @@ export default class TimeSlotGroup extends Component {
     }
     return ret
   }
+
+  renderAddEventButton() {
+    const { columnEvents, timeslots } = this.props
+    let btnClassNAme = 'add-event-btn'
+
+    if (columnEvents && columnEvents.length) {
+      columnEvents.forEach(event => {
+        const eventStartTimeHour = new Date(event.start).getHours()
+        const slotTimeHour = new Date(this.props.value).getHours()
+        const eventEndTimeHour = new Date(event.end).getHours()
+        const endSlotTimeHour = slotTimeHour + timeslots
+
+        if (
+          eventEndTimeHour === endSlotTimeHour ||
+          (eventStartTimeHour >= slotTimeHour &&
+            eventStartTimeHour < endSlotTimeHour) ||
+          (eventEndTimeHour > slotTimeHour &&
+            eventEndTimeHour < endSlotTimeHour)
+        ) {
+          btnClassNAme = 'add-event-btn small'
+        }
+      })
+    }
+
+    return (
+      <div className={btnClassNAme}>
+        <div className="add-btn-text">+</div>
+      </div>
+    )
+  }
+
   render() {
-    return <div className="rbc-timeslot-group">{this.renderSlices()}</div>
+    return (
+      <div className="rbc-timeslot-group">
+        {this.renderSlices()}
+        {this.renderAddEventButton()}
+      </div>
+    )
   }
 }
