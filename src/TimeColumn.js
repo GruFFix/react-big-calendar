@@ -26,6 +26,7 @@ export default class TimeColumn extends Component {
     dayPropGetter: PropTypes.func,
     dayWrapperComponent: elementType,
     columnEvents: PropTypes.array,
+    weekCloseDays: PropTypes.array,
 
     events: PropTypes.array,
   }
@@ -50,6 +51,7 @@ export default class TimeColumn extends Component {
       culture,
       events,
       columnEvents,
+      weekCloseDays,
     } = this.props
 
     return (
@@ -68,6 +70,7 @@ export default class TimeColumn extends Component {
         dayWrapperComponent={dayWrapperComponent}
         events={events}
         columnEvents={columnEvents}
+        weekCloseDays={weekCloseDays}
       />
     )
   }

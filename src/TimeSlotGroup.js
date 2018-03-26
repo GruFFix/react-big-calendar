@@ -3,6 +3,7 @@ import React, { Component } from 'react'
 import TimeSlot from './TimeSlot'
 import date from './utils/dates.js'
 import localizer from './localizer'
+import findIndex from 'lodash/findIndex'
 import { elementType, dateFormat } from './utils/propTypes'
 
 export default class TimeSlotGroup extends Component {
@@ -19,6 +20,7 @@ export default class TimeSlotGroup extends Component {
     resource: PropTypes.string,
     events: PropTypes.array,
     columnEvents: PropTypes.array,
+    weekCloseDays: PropTypes.array,
   }
   static defaultProps = {
     timeslots: 2,
@@ -101,10 +103,26 @@ export default class TimeSlotGroup extends Component {
   }
 
   render() {
+    const { value, weekCloseDays } = this.props
+
+    const isClose = findIndex(weekCloseDays, closeDate => {
+      if (
+        Date.parse(closeDate) === Date.parse(value) ||
+        new Date(value).getDay() === 0
+      ) {
+        return true
+      }
+    })
+
+    const slotClassName =
+      isClose !== -1 ? 'rbc-timeslot-group close' : 'rbc-timeslot-group'
+    const isShowAddBtn = isClose === -1
+
     return (
-      <div className="rbc-timeslot-group">
+      <div className={slotClassName}>
         {this.renderSlices()}
-        {this.renderAddEventButton()}
+
+        {isShowAddBtn && this.renderAddEventButton()}
       </div>
     )
   }
