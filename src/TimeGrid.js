@@ -347,7 +347,7 @@ export default class TimeGrid extends Component {
           <div
             key={i + '-' + j}
             className={cn(
-              'rbc-header',
+              'rbc-header resources',
               dates.eq(date, today, 'day') && 'rbc-today'
             )}
             style={segStyle(1, this.slots)}
