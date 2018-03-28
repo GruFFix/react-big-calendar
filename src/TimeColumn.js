@@ -23,10 +23,12 @@ export default class TimeColumn extends Component {
     isToday: PropTypes.bool,
 
     slotPropGetter: PropTypes.func,
+    handleAddEvent: PropTypes.func,
     dayPropGetter: PropTypes.func,
     dayWrapperComponent: elementType,
     columnEvents: PropTypes.array,
     weekCloseDays: PropTypes.array,
+    view: PropTypes.string,
 
     events: PropTypes.array,
   }
@@ -52,6 +54,8 @@ export default class TimeColumn extends Component {
       events,
       columnEvents,
       weekCloseDays,
+      handleAddEvent,
+      view,
     } = this.props
 
     return (
@@ -71,6 +75,8 @@ export default class TimeColumn extends Component {
         events={events}
         columnEvents={columnEvents}
         weekCloseDays={weekCloseDays}
+        view={view}
+        handleAddEvent={handleAddEvent}
       />
     )
   }
@@ -87,6 +93,7 @@ export default class TimeColumn extends Component {
       timeslots,
       resource,
       isToday,
+      view,
     } = this.props
     const totalMin = dates.diff(min, max, 'minutes')
     const numGroups = Math.ceil(totalMin / (step * timeslots))
@@ -114,12 +121,13 @@ export default class TimeColumn extends Component {
 
     return (
       <div className={cn(className, 'rbc-time-column')} style={style}>
-        {isToday && (
-          <div className="today-border-box">
-            <div className="today-border left" />
-            <div className="today-border right" />
-          </div>
-        )}
+        {isToday &&
+          view !== 'work_week' && (
+            <div className="today-border-box">
+              <div className="today-border left" />
+              <div className="today-border right" />
+            </div>
+          )}
 
         {renderedSlots}
         {children}

@@ -40,6 +40,7 @@ export default class TimeGrid extends Component {
     dayFormat: dateFormat,
     showMultiDayTimes: PropTypes.bool,
     culture: PropTypes.string,
+    view: PropTypes.string,
 
     rtl: PropTypes.bool,
     width: PropTypes.number,
@@ -334,8 +335,12 @@ export default class TimeGrid extends Component {
   }
 
   renderHeaderResources(range, resources) {
-    const { resourceTitleAccessor, getNow } = this.props
+    const { resourceTitleAccessor, getNow, components } = this.props
+
     const today = getNow()
+
+    let HeaderComponent = components.header || Header
+
     return range.map((date, i) => {
       return resources.map((resource, j) => {
         return (
@@ -347,7 +352,7 @@ export default class TimeGrid extends Component {
             )}
             style={segStyle(1, this.slots)}
           >
-            <span>{get(resource, resourceTitleAccessor)}</span>
+            <HeaderComponent title={get(resource, resourceTitleAccessor)} />
           </div>
         )
       })
@@ -362,6 +367,7 @@ export default class TimeGrid extends Component {
       dayPropGetter,
       getDrilldownView,
       getNow,
+      view,
     } = this.props
     let HeaderComponent = components.header || Header
     const today = getNow()
@@ -380,6 +386,7 @@ export default class TimeGrid extends Component {
           localizer={localizer}
           format={dayFormat}
           culture={culture}
+          isToday={dates.eq(date, today, 'day')}
         />
       )
 
@@ -404,12 +411,13 @@ export default class TimeGrid extends Component {
             <span>{header}</span>
           )}
 
-          {dates.eq(date, today, 'day') && (
-            <div className="today-border-box">
-              <div className="today-border left header" />
-              <div className="today-border right header" />
-            </div>
-          )}
+          {dates.eq(date, today, 'day') &&
+            view !== 'work_week' && (
+              <div className="today-border-box">
+                <div className="today-border left header" />
+                <div className="today-border right header" />
+              </div>
+            )}
         </div>
       )
     })

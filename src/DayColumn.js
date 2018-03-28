@@ -71,6 +71,7 @@ class DayColumn extends React.Component {
     eventComponent: elementType,
     eventWrapperComponent: elementType.isRequired,
     resource: PropTypes.string,
+    view: PropTypes.string,
   }
 
   static defaultProps = {
@@ -104,6 +105,7 @@ class DayColumn extends React.Component {
       culture,
       dayPropGetter,
       events,
+      view,
       ...props
     } = this.props
 
@@ -133,9 +135,18 @@ class DayColumn extends React.Component {
         min={min}
         max={max}
         step={step}
+        view={view}
         columnEvents={events}
       >
-        <div className={cn('rbc-events-container', { rtl: this.props.rtl })}>
+        <div
+          className={cn(
+            'rbc-events-container',
+            {
+              'full-width': view === 'work_week',
+            },
+            { rtl: this.props.rtl }
+          )}
+        >
           {this.renderEvents()}
         </div>
         {selecting && (

@@ -13,6 +13,7 @@ export default class TimeSlot extends Component {
     culture: PropTypes.string,
     slotPropGetter: PropTypes.func,
     resource: PropTypes.string,
+    view: PropTypes.string,
   }
 
   static defaultProps = {
@@ -32,6 +33,7 @@ export default class TimeSlot extends Component {
           style={style}
           className={cn(
             'rbc-time-slot',
+            this.props.view === 'work_week' && 'border',
             className,
             this.props.showLabel && 'rbc-label',
             this.props.isNow && 'rbc-now'

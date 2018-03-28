@@ -5,6 +5,7 @@ import date from './utils/dates.js'
 import localizer from './localizer'
 import findIndex from 'lodash/findIndex'
 import { elementType, dateFormat } from './utils/propTypes'
+import cn from 'classnames'
 
 export default class TimeSlotGroup extends Component {
   static propTypes = {
@@ -21,6 +22,8 @@ export default class TimeSlotGroup extends Component {
     events: PropTypes.array,
     columnEvents: PropTypes.array,
     weekCloseDays: PropTypes.array,
+    view: PropTypes.string,
+    handleAddEvent: PropTypes.func,
   }
   static defaultProps = {
     timeslots: 2,
@@ -38,6 +41,7 @@ export default class TimeSlotGroup extends Component {
       resource,
       slotPropGetter,
       events,
+      view,
     } = this.props
 
     return (
@@ -52,6 +56,7 @@ export default class TimeSlotGroup extends Component {
         resource={resource}
         value={value}
         events={events}
+        view={view}
       />
     )
   }
@@ -96,30 +101,52 @@ export default class TimeSlotGroup extends Component {
     }
 
     return (
-      <div className={btnClassNAme}>
+      <div
+        className={btnClassNAme}
+        ref={node => {
+          this.refSlotItem = node
+        }}
+        onClick={this.handleAddEvent}
+      >
         <div className="add-btn-text">+</div>
       </div>
     )
   }
 
+  handleAddEvent = () => {
+    const { handleAddEvent, value } = this.props
+    const params = {
+      refSlot: this.refSlotItem,
+      slotDate: value,
+    }
+
+    handleAddEvent(params)
+  }
+
   render() {
-    const { value, weekCloseDays } = this.props
+    const { value, weekCloseDays, view, className } = this.props
 
     const isClose = findIndex(weekCloseDays, closeDate => {
       if (
         Date.parse(closeDate) === Date.parse(value) ||
-        new Date(value).getDay() === 0
+        (new Date(value).getDay() === 0 && view !== 'work_week')
       ) {
         return true
       }
     })
 
-    const slotClassName =
-      isClose !== -1 ? 'rbc-timeslot-group close' : 'rbc-timeslot-group'
-    const isShowAddBtn = isClose === -1
+    const isShowAddBtn = isClose === -1 && view !== 'work_week'
 
     return (
-      <div className={slotClassName}>
+      <div
+        className={cn(
+          className,
+          'rbc-timeslot-group',
+          isClose !== -1 && 'close',
+          view === 'work_week' && 'small'
+        )}
+        ref={e => (this.test = e)}
+      >
         {this.renderSlices()}
 
         {isShowAddBtn && this.renderAddEventButton()}
