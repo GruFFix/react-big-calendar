@@ -226,7 +226,7 @@ class DayColumn extends React.Component {
         label = localizer.format({ start, end }, _eventTimeRangeFormat, culture)
       }
 
-      let _isSelected = isSelected(event, selected)
+      let _isSelected = isSelected(event, selected && selected.event)
 
       if (eventPropGetter)
         var { style: xStyle, className } = eventPropGetter(
@@ -409,7 +409,12 @@ class DayColumn extends React.Component {
   }
 
   _select = (...args) => {
-    notify(this.props.onSelectEvent, args)
+    const newArgs = {
+      event: args[0],
+      ref: args[1].currentTarget,
+    }
+
+    notify(this.props.onSelectEvent, ...newArgs)
   }
 
   _doubleClick = (...args) => {
