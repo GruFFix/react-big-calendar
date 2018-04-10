@@ -122,7 +122,8 @@ export default class TimeColumn extends Component {
     return (
       <div className={cn(className, 'rbc-time-column')} style={style}>
         {isToday &&
-          view !== 'work_week' && (
+          view !== 'work_week' &&
+          view !== 'day' && (
             <div className="today-border-box">
               <div className="today-border left" />
               <div className="today-border right" />

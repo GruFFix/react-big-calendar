@@ -368,6 +368,7 @@ export default class TimeGrid extends Component {
       getDrilldownView,
       getNow,
       view,
+      onNavigate,
     } = this.props
     let HeaderComponent = components.header || Header
     const today = getNow()
@@ -387,6 +388,7 @@ export default class TimeGrid extends Component {
           format={dayFormat}
           culture={culture}
           isToday={dates.eq(date, today, 'day')}
+          onNavigate={onNavigate}
         />
       )
 
@@ -412,7 +414,8 @@ export default class TimeGrid extends Component {
           )}
 
           {dates.eq(date, today, 'day') &&
-            view !== 'work_week' && (
+            view !== 'work_week' &&
+            view !== 'day' && (
               <div className="today-border-box">
                 <div className="today-border left header" />
                 <div className="today-border right header" />
@@ -482,7 +485,7 @@ export default class TimeGrid extends Component {
     if (this._updatingOverflow) return
 
     let isOverflowing =
-      this.refs.content.scrollHeight > this.refs.content.clientHeight
+      this.refs.content.scrollHeight < this.refs.content.clientHeight
 
     if (this.state.isOverflowing !== isOverflowing) {
       this._updatingOverflow = true
