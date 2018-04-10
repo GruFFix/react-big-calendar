@@ -204,25 +204,26 @@ export default class TimeGrid extends Component {
       view === 'work_week' ? 'rbc-time-view scroll' : 'rbc-time-view'
 
     return (
-      <div className="rbc-month-view-scroll">
-        <div className={isScrollClass}>
-          {this.renderHeader(range, allDayEvents, width, resources)}
+      <div className="gradient-box">
+        <div className="rbc-month-view-scroll">
+          <div className={isScrollClass}>
+            {this.renderHeader(range, allDayEvents, width, resources)}
 
-          <div ref="content" className="rbc-time-content">
-            <TimeColumn
-              {...this.props}
-              showLabels
-              style={{ width }}
-              ref={gutterRef}
-              className="rbc-time-gutter"
-            />
-            {eventsRendered}
+            <div ref="content" className="rbc-time-content">
+              <TimeColumn
+                {...this.props}
+                showLabels
+                style={{ width }}
+                ref={gutterRef}
+                className="rbc-time-gutter"
+              />
+              {eventsRendered}
 
-            <div ref="timeIndicator" className="rbc-current-time-indicator" />
+              <div ref="timeIndicator" className="rbc-current-time-indicator" />
+            </div>
           </div>
-
-          <div className="gradient" />
         </div>
+        {view !== 'day' && <div className="gradient" />}
       </div>
     )
   }
