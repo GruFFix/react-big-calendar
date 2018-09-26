@@ -77,6 +77,8 @@ class BackgroundCells extends React.Component {
           const segmStyles = segStyle(1, range.length)
           const styles = Object.assign({}, dayStyles, segmStyles)
 
+          const isSunday = new Date(date).getDay() === 0
+
           return (
             <Wrapper key={index} value={date} range={range}>
               <div
@@ -84,6 +86,7 @@ class BackgroundCells extends React.Component {
                 className={cn(
                   'rbc-day-bg',
                   className,
+                  isSunday && 'sunday',
                   selected && 'rbc-selected-cell',
                   dates.eq(date, current, 'day') && 'rbc-today',
                   currentDate &&

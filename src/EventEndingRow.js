@@ -32,7 +32,7 @@ class EventEndingRow extends React.Component {
     while (current <= slotCount) {
       let key = '_lvl_' + current
 
-      let { event, left, right, span } =
+      let { event, left } =
         rowSegments.filter(seg => isSegmentInSlot(seg, current))[0] || {} //eslint-disable-line
 
       if (!event) {
@@ -42,34 +42,22 @@ class EventEndingRow extends React.Component {
 
       let gap = Math.max(0, left - lastEnd)
 
-      if (this.canRenderSlotEvent(left, span)) {
-        let content = EventRowMixin.renderEvent(this.props, event)
-
-        if (gap) {
-          row.push(EventRowMixin.renderSpan(this.props, gap, key + '_gap'))
-        }
-
-        row.push(EventRowMixin.renderSpan(this.props, span, key, content))
-
-        lastEnd = current = right + 1
-      } else {
-        if (gap) {
-          row.push(EventRowMixin.renderSpan(this.props, gap, key + '_gap'))
-        }
-
-        row.push(
-          EventRowMixin.renderSpan(
-            this.props,
-            1,
-            key,
-            this.renderShowMore(segments, current)
-          )
-        )
-        lastEnd = current = current + 1
+      if (gap) {
+        row.push(EventRowMixin.renderSpan(this.props, gap, key + '_gap'))
       }
-    }
 
-    return <div className="rbc-row">{row}</div>
+      row.push(
+        EventRowMixin.renderSpan(
+          this.props,
+          1,
+          key,
+          this.renderShowMore(segments, current)
+        )
+      )
+
+      lastEnd = current = current + 1
+    }
+    return <div className="show-more-box rbc-row">{row}</div>
   }
 
   canRenderSlotEvent(slot, span) {

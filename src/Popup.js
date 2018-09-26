@@ -21,6 +21,7 @@ const propTypes = {
   events: PropTypes.array,
   selected: PropTypes.object,
   eventComponent: elementType,
+  PopupContainer: elementType,
   eventWrapperComponent: elementType,
   dayHeaderFormat: dateFormat,
 }
@@ -51,6 +52,7 @@ class Popup extends React.Component {
       selected,
       eventComponent,
       eventWrapperComponent,
+      PopupContainer,
       ...props
     } = this.props
 
@@ -63,6 +65,19 @@ class Popup extends React.Component {
       left: left - leftOffset,
       minWidth: width + width / 2,
     }
+
+    const popupHeaderTime = localizer.format(
+      props.slotStart,
+      'dddd, DD MMMM',
+      props.culture
+    )
+
+    if (PopupContainer)
+      return (
+        <div ref="root" style={style} className="custom-rbc-overlay">
+          <PopupContainer events={events} title={popupHeaderTime} />
+        </div>
+      )
 
     return (
       <div ref="root" style={style} className="rbc-overlay">

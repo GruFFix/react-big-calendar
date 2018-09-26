@@ -802,6 +802,7 @@ class Calendar extends React.Component {
           onDoubleClickEvent={this.handleDoubleClickEvent}
           onSelectSlot={this.handleSelectSlot}
           onShowMore={this._showMore}
+          view={view}
         />
       </div>
     )

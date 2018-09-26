@@ -71,6 +71,7 @@ class DayColumn extends React.Component {
     eventComponent: elementType,
     eventWrapperComponent: elementType.isRequired,
     resource: PropTypes.string,
+    view: PropTypes.string,
   }
 
   static defaultProps = {
@@ -103,6 +104,8 @@ class DayColumn extends React.Component {
       selectRangeFormat,
       culture,
       dayPropGetter,
+      events,
+      view,
       ...props
     } = this.props
 
@@ -127,12 +130,23 @@ class DayColumn extends React.Component {
           dates.eq(max, current, 'day') && 'rbc-today'
         )}
         style={style}
+        isToday={dates.eq(max, current, 'day')}
         getNow={getNow}
         min={min}
         max={max}
         step={step}
+        view={view}
+        columnEvents={events}
       >
-        <div className={cn('rbc-events-container', { rtl: this.props.rtl })}>
+        <div
+          className={cn(
+            'rbc-events-container',
+            {
+              'full-width': view === 'work_week',
+            },
+            { rtl: this.props.rtl }
+          )}
+        >
           {this.renderEvents()}
         </div>
         {selecting && (
@@ -212,7 +226,7 @@ class DayColumn extends React.Component {
         label = localizer.format({ start, end }, _eventTimeRangeFormat, culture)
       }
 
-      let _isSelected = isSelected(event, selected)
+      let _isSelected = isSelected(event, selected && selected.event)
 
       if (eventPropGetter)
         var { style: xStyle, className } = eventPropGetter(
@@ -224,8 +238,14 @@ class DayColumn extends React.Component {
 
       let { height, top, width, xOffset } = style
 
+      let wrapperProps = {
+        event,
+        continuesPrior: _continuesPrior,
+        continuesAfter: _continuesAfter,
+      }
+
       return (
-        <EventWrapper event={event} key={'evt_' + idx}>
+        <EventWrapper {...wrapperProps} key={'evt_' + idx}>
           <div
             style={{
               ...xStyle,
@@ -249,14 +269,16 @@ class DayColumn extends React.Component {
               'rbc-event-continues-day-after': _continuesAfter,
             })}
           >
-            <div className="rbc-event-label">{label}</div>
-            <div className="rbc-event-content">
-              {EventComponent ? (
-                <EventComponent event={event} title={title} />
-              ) : (
-                title
-              )}
-            </div>
+            {EventComponent ? (
+              <EventComponent
+                event={event}
+                isSelected={_isSelected}
+                title={title}
+                label={label}
+              />
+            ) : (
+              title
+            )}
           </div>
         </EventWrapper>
       )
@@ -330,7 +352,11 @@ class DayColumn extends React.Component {
 
     let selectorClicksHandler = (box, actionType) => {
       if (!isEvent(findDOMNode(this), box))
-        this._selectSlot({ ...selectionState(box), action: actionType })
+        this._selectSlot({
+          ...selectionState(box),
+          action: actionType,
+          box,
+        })
 
       this.setState({ selecting: false })
     }
@@ -348,9 +374,9 @@ class DayColumn extends React.Component {
 
     selector.on('doubleClick', box => selectorClicksHandler(box, 'doubleClick'))
 
-    selector.on('select', () => {
+    selector.on('select', bounds => {
       if (this.state.selecting) {
-        this._selectSlot({ ...this.state, action: 'select' })
+        this._selectSlot({ ...this.state, action: 'select', bounds })
         this.setState({ selecting: false })
       }
     })
@@ -362,7 +388,7 @@ class DayColumn extends React.Component {
     this._selector = null
   }
 
-  _selectSlot = ({ startDate, endDate, action }) => {
+  _selectSlot = ({ startDate, endDate, action, bounds, box }) => {
     let current = startDate,
       slots = []
 
@@ -377,11 +403,18 @@ class DayColumn extends React.Component {
       end: endDate,
       resourceId: this.props.resource,
       action,
+      bounds,
+      box,
     })
   }
 
   _select = (...args) => {
-    notify(this.props.onSelectEvent, args)
+    const newArgs = {
+      event: args[0],
+      ref: args[1].currentTarget,
+    }
+
+    notify(this.props.onSelectEvent, ...newArgs)
   }
 
   _doubleClick = (...args) => {

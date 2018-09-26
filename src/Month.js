@@ -32,6 +32,7 @@ let propTypes = {
   max: PropTypes.instanceOf(Date),
 
   step: PropTypes.number,
+  maxEventCount: PropTypes.number,
   getNow: PropTypes.func.isRequired,
 
   scrollToTime: PropTypes.instanceOf(Date),
@@ -88,7 +89,7 @@ class MonthView extends React.Component {
     this._bgRows = []
     this._pendingSelection = []
     this.state = {
-      rowLimit: 5,
+      rowLimit: 4,
       needLimitMeasure: true,
     }
   }
@@ -138,12 +139,18 @@ class MonthView extends React.Component {
     this._weekCount = weeks.length
 
     return (
-      <div className={cn('rbc-month-view', className)}>
-        <div className="rbc-row rbc-month-header">
-          {this.renderHeaders(weeks[0], weekdayFormat, culture)}
+      <div className="gradient-box">
+        <div className="rbc-month-view-scroll">
+          <div className={cn('rbc-month-view', className)}>
+            <div className="rbc-row rbc-month-header">
+              {this.renderHeaders(weeks[0], weekdayFormat, culture)}
+            </div>
+            {weeks.map(this.renderWeek)}
+            {this.props.popup && this.renderOverlay()}
+          </div>
         </div>
-        {weeks.map(this.renderWeek)}
-        {this.props.popup && this.renderOverlay()}
+
+        <div className="gradient" />
       </div>
     )
   }
@@ -165,6 +172,7 @@ class MonthView extends React.Component {
       selected,
       date,
       longPressThreshold,
+      maxEventCount,
     } = this.props
 
     const { needLimitMeasure, rowLimit } = this.state
@@ -181,6 +189,7 @@ class MonthView extends React.Component {
         getNow={getNow}
         date={date}
         range={week}
+        maxEventCount={maxEventCount}
         events={events}
         maxRows={rowLimit}
         selected={selected}
@@ -264,25 +273,31 @@ class MonthView extends React.Component {
     let { components } = this.props
 
     return (
-      <Overlay
-        rootClose
-        placement="bottom"
-        container={this}
-        show={!!overlay.position}
-        onHide={() => this.setState({ overlay: null })}
-      >
-        <Popup
-          {...this.props}
-          eventComponent={components.event}
-          eventWrapperComponent={components.eventWrapper}
-          position={overlay.position}
-          events={overlay.events}
-          slotStart={overlay.date}
-          slotEnd={overlay.end}
-          onSelect={this.handleSelectEvent}
-          onDoubleClick={this.handleDoubleClickEvent}
-        />
-      </Overlay>
+      <div>
+        {!!overlay.position &&
+          components.popup && <div className="rbc-overlay-bg" />}
+
+        <Overlay
+          rootClose
+          placement="bottom"
+          container={this}
+          show={!!overlay.position}
+          onHide={() => this.setState({ overlay: null })}
+        >
+          <Popup
+            {...this.props}
+            eventComponent={components.event}
+            eventWrapperComponent={components.eventWrapper}
+            position={overlay.position}
+            events={overlay.events}
+            slotStart={overlay.date}
+            slotEnd={overlay.end}
+            onSelect={this.handleSelectEvent}
+            onDoubleClick={this.handleDoubleClickEvent}
+            PopupContainer={components.popup}
+          />
+        </Overlay>
+      </div>
     )
   }
 

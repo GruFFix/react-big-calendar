@@ -48,6 +48,7 @@ const propTypes = {
   eventWrapperComponent: elementType.isRequired,
   minRows: PropTypes.number.isRequired,
   maxRows: PropTypes.number.isRequired,
+  maxEventCount: PropTypes.number,
 }
 
 const defaultProps = {
@@ -94,11 +95,15 @@ class DateContentRow extends React.Component {
   }
 
   getRowLimit() {
+    const { maxEventCount } = this.props
+
     let eventHeight = getHeight(this.eventRow)
     let headingHeight = this.headingRow ? getHeight(this.headingRow) : 0
     let eventSpace = getHeight(findDOMNode(this)) - headingHeight
 
-    return Math.max(Math.floor(eventSpace / eventHeight), 1)
+    return (
+      maxEventCount + 1 || Math.max(Math.floor(eventSpace / eventHeight), 1)
+    )
   }
 
   renderHeadingCell = (date, index) => {
@@ -199,12 +204,13 @@ class DateContentRow extends React.Component {
           longPressThreshold={longPressThreshold}
         />
 
-        <div className="rbc-row-content">
-          {renderHeader && (
-            <div className="rbc-row" ref={this.createHeadingRef}>
-              {range.map(this.renderHeadingCell)}
-            </div>
-          )}
+        {renderHeader && (
+          <div className="rbc-row" ref={this.createHeadingRef}>
+            {range.map(this.renderHeadingCell)}
+          </div>
+        )}
+
+        <div className="rbc-events-row-box">
           {levels.map((segs, idx) => (
             <EventRow
               {...props}
@@ -219,6 +225,7 @@ class DateContentRow extends React.Component {
               endAccessor={endAccessor}
             />
           ))}
+
           {!!extra.length && (
             <EventEndingRow
               {...props}

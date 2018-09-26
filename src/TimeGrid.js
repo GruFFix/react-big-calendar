@@ -40,6 +40,7 @@ export default class TimeGrid extends Component {
     dayFormat: dateFormat,
     showMultiDayTimes: PropTypes.bool,
     culture: PropTypes.string,
+    view: PropTypes.string,
 
     rtl: PropTypes.bool,
     width: PropTypes.number,
@@ -158,6 +159,7 @@ export default class TimeGrid extends Component {
       resources,
       allDayAccessor,
       showMultiDayTimes,
+      view,
     } = this.props
 
     width = width || this.state.gutterWidth
@@ -198,22 +200,30 @@ export default class TimeGrid extends Component {
       resources || [null]
     )
 
+    const isScrollClass =
+      view === 'work_week' ? 'rbc-time-view scroll' : 'rbc-time-view'
+
     return (
-      <div className="rbc-time-view">
-        {this.renderHeader(range, allDayEvents, width, resources)}
+      <div className="gradient-box">
+        <div className="rbc-month-view-scroll">
+          <div className={isScrollClass}>
+            {this.renderHeader(range, allDayEvents, width, resources)}
 
-        <div ref="content" className="rbc-time-content">
-          <TimeColumn
-            {...this.props}
-            showLabels
-            style={{ width }}
-            ref={gutterRef}
-            className="rbc-time-gutter"
-          />
-          {eventsRendered}
+            <div ref="content" className="rbc-time-content">
+              <TimeColumn
+                {...this.props}
+                showLabels
+                style={{ width }}
+                ref={gutterRef}
+                className="rbc-time-gutter"
+              />
+              {eventsRendered}
 
-          <div ref="timeIndicator" className="rbc-current-time-indicator" />
+              <div ref="timeIndicator" className="rbc-current-time-indicator" />
+            </div>
+          </div>
         </div>
+        {view !== 'day' && <div className="gradient" />}
       </div>
     )
   }
@@ -295,7 +305,7 @@ export default class TimeGrid extends Component {
             {headerRendered}
           </div>
         )}
-        <div className="rbc-row">
+        <div className="rbc-row hide-rbc-row">
           <div
             ref={ref => (this._gutters[0] = ref)}
             className="rbc-label rbc-header-gutter"
@@ -334,20 +344,24 @@ export default class TimeGrid extends Component {
   }
 
   renderHeaderResources(range, resources) {
-    const { resourceTitleAccessor, getNow } = this.props
+    const { resourceTitleAccessor, getNow, components } = this.props
+
     const today = getNow()
+
+    let HeaderComponent = components.header || Header
+
     return range.map((date, i) => {
       return resources.map((resource, j) => {
         return (
           <div
             key={i + '-' + j}
             className={cn(
-              'rbc-header',
+              'rbc-header resources',
               dates.eq(date, today, 'day') && 'rbc-today'
             )}
             style={segStyle(1, this.slots)}
           >
-            <span>{get(resource, resourceTitleAccessor)}</span>
+            <HeaderComponent title={get(resource, resourceTitleAccessor)} />
           </div>
         )
       })
@@ -362,6 +376,8 @@ export default class TimeGrid extends Component {
       dayPropGetter,
       getDrilldownView,
       getNow,
+      view,
+      onNavigate,
     } = this.props
     let HeaderComponent = components.header || Header
     const today = getNow()
@@ -380,6 +396,8 @@ export default class TimeGrid extends Component {
           localizer={localizer}
           format={dayFormat}
           culture={culture}
+          isToday={dates.eq(date, today, 'day')}
+          onNavigate={onNavigate}
         />
       )
 
@@ -403,6 +421,15 @@ export default class TimeGrid extends Component {
           ) : (
             <span>{header}</span>
           )}
+
+          {dates.eq(date, today, 'day') &&
+            view !== 'work_week' &&
+            view !== 'day' && (
+              <div className="today-border-box">
+                <div className="today-border left header" />
+                <div className="today-border right header" />
+              </div>
+            )}
         </div>
       )
     })
@@ -467,7 +494,7 @@ export default class TimeGrid extends Component {
     if (this._updatingOverflow) return
 
     let isOverflowing =
-      this.refs.content.scrollHeight > this.refs.content.clientHeight
+      this.refs.content.scrollHeight < this.refs.content.clientHeight
 
     if (this.state.isOverflowing !== isOverflowing) {
       this._updatingOverflow = true
